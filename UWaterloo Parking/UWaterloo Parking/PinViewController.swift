@@ -23,6 +23,8 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
         
         super.viewDidLoad()
         
+         self.navigationItem.title = "PIN"
+        
 //        let latitude: CLLocationDegrees = 43.47134906
 //        let longitude: CLLocationDegrees = -80.54270285
         

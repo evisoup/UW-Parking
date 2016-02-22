@@ -30,10 +30,11 @@ class InfoViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+         self.navigationItem.title = "INFO"
+        
         
         RestApiManager.sharedInstance.getData { json in
             let results = json["data"]
-            print(results)
             
             for (index: _, subJson: Json) in results {
                 if Json["name"] == "Parking Services" {
@@ -50,15 +51,9 @@ class InfoViewController: UIViewController {
                         self.latitude = Json["latitude"].double!
                         self.longitude = Json["longitude"].double!
                     })
-                    
                 }
             }
-            
-            
-        }
-        
-        
-        
+        }    
     }
     
     @IBAction func homepageDir(sender: AnyObject) {
@@ -81,27 +76,7 @@ class InfoViewController: UIViewController {
         let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
         //MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
         MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
-        
-        // walking travel time
-        //        let request = MKDirectionsRequest()
-        
-        //let markDC = MKPlacemark(coordinate: CLLocationCoordinate2DMake(43.47155, -80.54565), addressDictionary: nil)
-        
-        //        request.source = MKMapItem(placemark: markDC)
-        //        request.destination = MKMapItem(placemark: markDestLocation)
-        //        request.transportType = .Walking
-        //        let directions = MKDirections(request: request)
-        //        directions.calculateETAWithCompletionHandler { response, error -> Void in
-        //            if let err = error {
-        //                self.desc.text = err.userInfo["NSLocalizedFailureReason"] as? String
-        //                return
-        //            }
-        //
-        //            self.desc.text = "\(response!.expectedTravelTime/60) minutes travel time"
-        //
-        //        }
-        
-        
+     
         
     }
     

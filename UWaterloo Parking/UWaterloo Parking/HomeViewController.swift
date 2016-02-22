@@ -10,7 +10,9 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    
+    @IBOutlet var actind: UIActivityIndicatorView!
+    var screenwidth:CGFloat = 0.0;
+    var screenheight:CGFloat = 0.0;
     
     @IBOutlet var cCap: UILabel!
     @IBOutlet var cPct: UILabel!
@@ -31,7 +33,9 @@ class HomeViewController: UIViewController {
     
     
     @IBAction func myRefresh(sender: AnyObject) {
+        actind.startAnimating()
         update()
+        
     }
 
     
@@ -41,6 +45,21 @@ class HomeViewController: UIViewController {
 //main
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let ssize:CGRect = UIScreen.mainScreen().bounds
+        screenwidth = ssize.width;
+        screenheight = ssize.height;
+
+        
+        //add four parking lots image view
+        
+//        var imageView : UIImageView
+//        imageView  = UIImageView(frame:CGRectMake(10+15, 50+30, 37, 38));
+//        imageView.image = UIImage(named:"lotc.png")
+//        self.view.addSubview(imageView)
+        
+        
+        self.navigationItem.title = "UWATERLOO PARKING"
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willEnterForground", name: UIApplicationWillEnterForegroundNotification, object: nil)
         
@@ -134,11 +153,12 @@ class HomeViewController: UIViewController {
                                 default:
                                     break
                                 }
+                                self.actind.stopAnimating()
                             }
                         }
                     }
-                    // print(String(jsonResult["data"])) // good
                     
+                    // print(String(jsonResult["data"])) // good
                 } catch {
                     print("JSON serialization failed")
                 }
@@ -148,6 +168,7 @@ class HomeViewController: UIViewController {
         }
         
         task.resume()
+
         
     }
     

@@ -9,20 +9,6 @@
 import UIKit
 import MapKit
 
-//class parkingLots: NSObject, MKAnnotation {
-//    var lotName: String?
-//    var coordinate: CLLocationCoordinate2D
-//    var currentCount: Int
-//    var capacity: Int
-//
-//    init(lotName: String, coordinate: CLLocationCoordinate2D, currentCount: Int, capacity: Int) {
-//        self.lotName = lotName
-//        self.coordinate = coordinate
-//        self.currentCount = currentCount
-//        self.capacity = capacity
-//    }
-//}
-
 class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentationControllerDelegate {
     
     @IBOutlet weak var mapContainer: MKMapView!
@@ -36,7 +22,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
         let latitude:CLLocationDegrees = 43.472761
         let longitude:CLLocationDegrees = -80.542164
         
-        //zoom in degree less: zoom+
         let latDelta:CLLocationDegrees = 0.02
         let longDelta:CLLocationDegrees = 0.02
         
@@ -49,7 +34,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
         mapContainer.delegate = self
         
         mapContainer.setRegion(region, animated: true)
-        //mapContainer.showsUserLocation = true
+        mapContainer.showsUserLocation = true
         mapContainer.showsCompass = true
         
         self.setParkingLot("C")
@@ -59,46 +44,69 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
         
     }
     
-    //    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-    //
-    //        //Define a reuse identifier. This is a string that will be used to ensure we reuse annotation views as much as possible.
-    //
-    //        let reuseId = "mapPin"
-    //
-    //        print("debug")
-    //
-    //        //Check whether the annotation we're creating a view for is one of our parkingLots objects.
-    //        if annotation.isKindOfClass(parkingLots.self) {
-    //            // Try to dequeue an annotation view from the map view's pool of unused views.
-    //            var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
-    //
-    //            if annotationView == nil {
-    //                print("debug2")
-    //                //If it isn't able to find a reusable view, create a new one using MKPinAnnotationView and sets its canShowCallout property to be true. This triggers the popup with the city name.
-    //                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-    //
-    //                //annotationView!.canShowCallout = true
-    //
-    //                //Create a new UIButton using the built-in .DetailDisclosure type. This is a small blue "i" symbol with a circle around it.
-    //                let btn = UIButton(type: .DetailDisclosure)
-    //
-    //                annotationView!.rightCalloutAccessoryView = btn
-    //            } else {
-    //                print("debug3")
-    //                //If it can reuse a view, update that view to use a different annotation.
-    //                annotationView!.annotation = annotation
-    //            }
-    //            print("debug4")
-    //            return annotationView
-    //        }
-    //
-    //        //If the annotation isn't a parkinglot, it must return nil so iOS uses a default view.
-    //        return nil
-    //        print("debug5")
-    //    }
+    func mapView(mapView: MKMapView,
+        viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+            
+            if !(annotation is CustomPointAnnotation) {
+                //return nil so map view draws "blue dot" for standard user location
+                return nil
+            }
+            
+            let reuseId = "pin"
+            var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as MKAnnotationView!
+            if pinView == nil {
+                pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+                pinView!.canShowCallout = true
+                pinView!.enabled = true
+                //pinView!.animatesDrop = true
+                
+                let btn = UIButton(type: .DetailDisclosure)
+                pinView!.rightCalloutAccessoryView = btn
+            }
+            else {
+                pinView!.annotation = annotation
+            }
+            
+            let cpa = annotation as! CustomPointAnnotation
+            pinView!.image = UIImage(named:cpa.imageName)
+            
+            return pinView
+    }
+    
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
+    {
+        let customedPin = view.annotation
+        let lotName = customedPin!.title!
+        let data = customedPin!.subtitle!
+        
+        let ac = UIAlertController(title: lotName, message: data!, preferredStyle: .Alert)
+        ac.addAction(UIAlertAction(
+            title: "Navigate Here", style: UIAlertActionStyle.Default, handler: { action in
+                
+                let currentLocation = MKMapItem.mapItemForCurrentLocation()
+                
+                let markDestLocation = MKPlacemark(coordinate: CLLocationCoordinate2DMake((customedPin!.coordinate.latitude), (customedPin!.coordinate.longitude)), addressDictionary: nil)
+                let destLocation = MKMapItem(placemark: markDestLocation)
+                
+                destLocation.name = "UWaterloo Parking Lot: \(lotName)"
+                //destLocation.openInMapsWithLaunchOptions(nil)
+                
+                let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+                //MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
+                MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
+            }
+            ))
+        ac.addAction(UIAlertAction(
+            title: "Cancel", style: UIAlertActionStyle.Default, handler: { action in
+                ac.dismissViewControllerAnimated(true, completion: nil)
+            }
+        ))
+        presentViewController(ac, animated: true, completion: nil)
+    }
+    
     
     func setParkingLot(lot: String) {
-        let annotation = MKPointAnnotation()
+        let annotation = CustomPointAnnotation()
         
         RestApiManager.sharedInstance.getParkingLotLocation(lot) {
             (latitude: Double, longitude: Double) in
@@ -107,24 +115,29 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
                 dispatch_async(dispatch_get_main_queue(),{
                     let location:CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitude, longitude)
                     
-                    //                    let lotAnnotation = parkingLots(lotName: lot, coordinate: location, currentCount: count, capacity: capacity)
-                    
                     annotation.coordinate = location
-                    annotation.title = lot
+                    annotation.title = "Parking Lot: \(lot)"
+                    
                     if count == -1 || capacity == -1 {
                         annotation.subtitle = "Data not available!"
                     } else {
                         annotation.subtitle = "\(count) / \(capacity)"
                     }
                     
-                    //self.mapContainer.addAnnotation(lotAnnotation)
-                    self.mapContainer.addAnnotation(annotation)
+                    if (lot == "C") {
+                        annotation.imageName = "iconc.png"
+                    }
+                    if (lot == "N") {
+                        annotation.imageName = "iconn.png"
+                    }
+                    if (lot == "W") {
+                        annotation.imageName = "iconw.png"
+                    }
+                    if (lot == "X") {
+                        annotation.imageName = "iconx.png"
+                    }
                     
-                    //                    let uilpgr = UILongPressGestureRecognizer(target: self, action: "action:")
-                    //
-                    //                    uilpgr.minimumPressDuration = 2
-                    //                    
-                    //                    self.mapContainer.addGestureRecognizer(uilpgr)
+                    self.mapContainer.addAnnotation(annotation)
                     
                 })
             }
@@ -132,3 +145,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
     }
 }
 
+
+class CustomPointAnnotation: MKPointAnnotation {
+    var imageName: String!
+}

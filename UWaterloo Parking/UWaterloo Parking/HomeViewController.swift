@@ -11,8 +11,8 @@ import UIKit
 class HomeViewController: UIViewController {
     
     @IBOutlet var actind: UIActivityIndicatorView!
-    var screenwidth:CGFloat = 0.0;
-    var screenheight:CGFloat = 0.0;
+//    var screenwidth:CGFloat = 0.0;
+//    var screenheight:CGFloat = 0.0;
     
     @IBOutlet var cCap: UILabel!
     @IBOutlet var cPct: UILabel!
@@ -41,14 +41,11 @@ class HomeViewController: UIViewController {
     
     
     
-    
 //main
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let ssize:CGRect = UIScreen.mainScreen().bounds
-        screenwidth = ssize.width;
-        screenheight = ssize.height;
+        
 
         
         //add four parking lots image view

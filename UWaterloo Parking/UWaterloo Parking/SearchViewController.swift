@@ -61,6 +61,17 @@ class SearchViewController: UIViewController, UITableViewDataSource, UISearchRes
         searchController.searchBar.sizeToFit()
         buildingTable.tableHeaderView = searchController.searchBar
         
+        
+        searchController.searchBar.placeholder = "Get Walking Estimate"
+        
+        searchController.searchBar.layer.borderColor = UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0).CGColor
+        searchController.searchBar.layer.borderWidth = 1
+        searchController.searchBar.barTintColor = UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0)
+        searchController.searchBar.tintColor = UIColor.blackColor()
+        
+        //        navigationItem.titleView = searchController.searchBar
+        //        searchController.hidesNavigationBarDuringPresentation = false
+        
         definesPresentationContext = true
         
 //                RestApiManager.sharedInstance.getBuildingData { json in
@@ -103,27 +114,31 @@ class SearchViewController: UIViewController, UITableViewDataSource, UISearchRes
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.selectInfo.text = "\(self.filteredData[indexPath.row].code)"
+        
+        let searchName = self.filteredData[indexPath.row].name
+        let searchCode = self.filteredData[indexPath.row].code
+        let searchLatitude = self.filteredData[indexPath.row].latitude
+        let searchLongitude = self.filteredData[indexPath.row].longitude
+        searchController.active = false
+        searchController.searchBar.resignFirstResponder()
+        
+        self.selectInfo.text = searchCode
         self.lotInfo.text = "Searching . . ."
         self.traveltimeInfo.text = ""
-
-        //self.buildingSearchbar.delegate
-        
-        searchController.searchBar.resignFirstResponder()
         
         var tmpTime = 0.0
         var tmpLot:String = ""
         var tmpRequestTime = 0.0
         var notprint = false
         
-        if (filteredData[indexPath.row].latitude == 0.0 || filteredData[indexPath.row].latitude == 0.0) {
+        if (searchLatitude == 0.0 || searchLongitude == 0.0) {
             notprint = true
-            self.selectInfo.text = "\(self.filteredData[indexPath.row].code)"
+            self.selectInfo.text = searchCode
             self.lotInfo.text = "not available"
             return
         } else {
             
-            let markSelection = MKPlacemark(coordinate: CLLocationCoordinate2DMake(filteredData[indexPath.row].latitude, filteredData[indexPath.row].longitude), addressDictionary: nil)
+            let markSelection = MKPlacemark(coordinate: CLLocationCoordinate2DMake(searchLatitude, searchLongitude), addressDictionary: nil)
             
             
             for index in 0..<self.lotlist.count {
@@ -131,14 +146,13 @@ class SearchViewController: UIViewController, UITableViewDataSource, UISearchRes
                 
                 var request = MKDirectionsRequest()
                 request.source = MKMapItem(placemark: markSelection)
-                //request.source = MKMapItem.mapItemForCurrentLocation()
                 request.destination = MKMapItem(placemark: markDestLot)
                 request.transportType = .Walking
                 
                 let direction = MKDirections(request: request)
                 direction.calculateETAWithCompletionHandler { response, error -> Void in
                     if let err = error {
-                        self.selectInfo.text = "\(self.filteredData[indexPath.row].code)"
+                        self.selectInfo.text = searchCode
                         self.lotInfo.text = "not available"
                         self.traveltimeInfo.text = ""
                         notprint = true
@@ -160,7 +174,7 @@ class SearchViewController: UIViewController, UITableViewDataSource, UISearchRes
             let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
             dispatch_after(delayTime, dispatch_get_main_queue()) {
                 if (!notprint) {
-                    self.selectInfo.text = "\(self.filteredData[indexPath.row].code)"
+                    self.selectInfo.text = searchCode
                     if (tmpLot == "" || Int(round(tmpTime)) == 0) {
                         self.lotInfo.text = "Please try again"
                         self.traveltimeInfo.text = ""

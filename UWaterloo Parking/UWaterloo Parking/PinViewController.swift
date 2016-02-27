@@ -13,92 +13,72 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
     
     var manager: CLLocationManager!
     var userLocation: CLLocation!
-    var dropPin: Bool = false
-    var myCarLatitude: CLLocationDegrees = 0.00
-    var myCarLongitude: CLLocationDegrees = 0.00
+    var pinMyCar: Bool = false
+    let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    var carLocationCleared: Bool = false
     
     @IBOutlet weak var mapContainer: MKMapView!
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-         self.navigationItem.title = "PIN"
-        
-//        let latitude: CLLocationDegrees = 43.47134906
-//        let longitude: CLLocationDegrees = -80.54270285
-        
-        manager = CLLocationManager()
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
-        
-//        userLocation = locations[0]
-//        
-//        let latitude = userLocation.coordinate.latitude
-//        
-//        let longitude = userLocation.coordinate.longitude
-//        
-//        let latDelta:CLLocationDegrees = 0.05
-//        let longDelta:CLLocationDegrees = 0.05
-//        
-//        let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-//        
-//        let span:MKCoordinateSpan = MKCoordinateSpanMake(latDelta,longDelta)
-//        
-//        let region:MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
-//        
-//        
-//        
-//        
-        
+        self.navigationItem.title = "PIN"
+        reloadMap()
         mapContainer.showsUserLocation = true
         mapContainer.showsCompass = true
         mapContainer.showsBuildings = true
-        //mapContainer.setRegion(region, animated: true)
-        
+        mapContainer.mapType = .Hybrid
     }
     
-    
-    @IBAction func pin(sender: AnyObject) {
-        //print("it worked")
-        
-        //        let curLat = 43.47134906
-        //        let curLong = -80.54270285
-        
+    func reloadMap() {
         manager = CLLocationManager()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
-        dropPin = true
-        
-        //print("debug 1")
-        
+    }
+    
+    @IBAction func clearCarLocationPin(sender: AnyObject) {
+        if defaults.doubleForKey("myCarLatitude") != 0.0 && defaults.doubleForKey("myCarLongitude") != 0.0
+            && !carLocationCleared
+        {
+            //clear saved value
+            defaults.removeObjectForKey("myCarLatitude")
+            defaults.removeObjectForKey("myCarLongitude")
+            carLocationCleared = true
+            //remove pin annotation
+            //if pinMyCar {
+                let annotationsToRemove = mapContainer.annotations.filter { $0 !== mapContainer.userLocation }
+                mapContainer.removeAnnotations( annotationsToRemove )
+            //}
+            //reload map
+            reloadMap()
+        }
+    }
+    
+    @IBAction func mapTypeToggle(sender: AnyObject) {
+        if (mapContainer.mapType == .Hybrid) {
+            mapContainer.mapType = .Standard
+        } else {
+            mapContainer.mapType = .Hybrid
+        }
+    }
+    
+    @IBAction func pin(sender: AnyObject) {
+        reloadMap()
+        pinMyCar = true
+        carLocationCleared = false
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        
-        //print("debug 3")
-        
         userLocation = locations[0]
-        
         let latitude = userLocation.coordinate.latitude
-        
         let longitude = userLocation.coordinate.longitude
-        
-        //let latitude: CLLocationDegrees = 43.47134906
-        //let longitude: CLLocationDegrees = -80.54270285
         
         let latDelta:CLLocationDegrees = 0.01
         let longDelta:CLLocationDegrees = 0.01
         
         let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-        
         let span:MKCoordinateSpan = MKCoordinateSpanMake(latDelta,longDelta)
-        
         let region:MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
         
         mapContainer.showsUserLocation = true
@@ -106,47 +86,79 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
         mapContainer.showsBuildings = true
         mapContainer.setRegion(region, animated: true)
         
-        if (dropPin) {
-            let annotation = MKPointAnnotation()
-            myCarLatitude = latitude
-            myCarLongitude = longitude
-            annotation.coordinate = coordinate
-            annotation.title = "MyCarLocation"
-            annotation.subtitle = "\(latitude) / \(longitude)"
-            
-            self.mapContainer.addAnnotation(annotation)
+        if defaults.doubleForKey("myCarLatitude") != 0.0 && defaults.doubleForKey("myCarLongitude") != 0.0 && !carLocationCleared
+        {
+            //print("previous car location exists")
+            let carLat: Double = defaults.doubleForKey("myCarLatitude")
+            let carLong: Double = defaults.doubleForKey("myCarLongitude")
+            if pinMyCar {
+                //remove previous car annotation
+                let annotationsToRemove = mapContainer.annotations.filter { $0 !== mapContainer.userLocation }
+                mapContainer.removeAnnotations( annotationsToRemove )
+                
+                //save new car loacation i.e. current location
+                defaults.setDouble(latitude, forKey: "myCarLatitude")
+                defaults.setDouble(longitude, forKey: "myCarLongitude")
+                
+                //draw new pin on the map i.e. current location
+                let annotation = MKPointAnnotation()
+                
+                annotation.coordinate = coordinate
+                annotation.title = "MyCarLocation"
+                annotation.subtitle = "\(latitude) / \(longitude)"
+                self.mapContainer.addAnnotation(annotation)
+                
+            } else {
+                //view on load
+                //draw previous pinned car location on the map
+                let annotation = MKPointAnnotation()
+                let pinnedCarCoordinates = CLLocationCoordinate2DMake(carLat, carLong)
+                annotation.coordinate = pinnedCarCoordinates
+                annotation.title = "MyCarLocation"
+                annotation.subtitle = "\(carLat) / \(carLong)"
+                self.mapContainer.addAnnotation(annotation)
+            }
+        } else {
+            print("no previous car location")
+            if pinMyCar && !carLocationCleared {
+                //save car loacation i.e. current location
+                defaults.setDouble(latitude, forKey: "myCarLatitude")
+                defaults.setDouble(longitude, forKey: "myCarLongitude")
+                
+                //draw new pin on the map i.e. current location
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                annotation.title = "MyCarLocation"
+                annotation.subtitle = "\(latitude) / \(longitude)"
+                
+                self.mapContainer.addAnnotation(annotation)
+            }
         }
         manager.stopUpdatingLocation()
-        
     }
     
     func centerMapOnMyCarLocation() {
-        
         let latDelta:CLLocationDegrees = 0.01
         let longDelta:CLLocationDegrees = 0.01
-        
         let span:MKCoordinateSpan = MKCoordinateSpanMake(latDelta,longDelta)
         
-        if (myCarLatitude != 0.00 && myCarLongitude != 0.00) {//car location pinned
-            let coordinate = CLLocationCoordinate2DMake(myCarLatitude,
-                myCarLongitude)
+        if defaults.doubleForKey("myCarLatitude") != 0.0 && defaults.doubleForKey("myCarLongitude") != 0.0 {
+            //car location pinned
+            let carLat: Double = defaults.doubleForKey("myCarLatitude")
+            let carLong: Double = defaults.doubleForKey("myCarLongitude")
+            let coordinate = CLLocationCoordinate2DMake(carLat, carLong)
             let region:MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
             mapContainer.setRegion(region, animated: true)
-        }         
-        
+        }
     }
     
     @IBAction func findCarBtn(sender: AnyObject) {
-        
         centerMapOnMyCarLocation()
-        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
 }
 

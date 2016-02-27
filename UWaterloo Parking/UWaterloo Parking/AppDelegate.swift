@@ -13,8 +13,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    func grabStoryBoard() -> UIStoryboard {
+        var storyboard = UIStoryboard()
+        let height = UIScreen.mainScreen().bounds.size.height
+        
+        if height == 667.0 {
+            storyboard = UIStoryboard(name: "Main", bundle: nil)
+        } else if height == 736.0 {
+            storyboard = UIStoryboard(name: "MainForPlus", bundle: nil)
+        } else if height == 568.0 {
+            storyboard = UIStoryboard(name: "MainFor55S", bundle: nil)
+        } else {
+            storyboard = UIStoryboard(name: "MainFor4S", bundle: nil)
+        }
+        return storyboard
+    }
+    
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        let storyboard: UIStoryboard = self.grabStoryBoard()
+        self.window?.rootViewController = storyboard.instantiateInitialViewController()
+        self.window!.makeKeyAndVisible()
+        
         // Override point for customization after application launch.
         let colour = UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0)
         UITabBar.appearance().tintColor = colour

@@ -118,9 +118,18 @@ class LotsDetailController: UIViewController {
         progress.glowAmount = 0
         //progress.setColors(UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0),UIColor.orangeColor(),UIColor.yellowColor())
         progress.setColors(UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0))
-//        progress.center = CGPoint(x: view.center.x, y: view.center.y - 80)
         
-        progress.center = CGPoint(x: view.center.x, y: view.center.y - 25)
+        let ssize:CGRect = UIScreen.mainScreen().bounds
+
+        if ssize.height == 480.0 {
+            progress.center = CGPoint(x: view.center.x, y: view.center.y - 10)
+        } else if ssize.height == 736.0 {
+            progress.center = CGPoint(x: view.center.x, y: view.center.y - 100)
+        } else if ssize.height == 568.0 {
+            progress.center = CGPoint(x: view.center.x, y: view.center.y - 45)
+        } else {
+            progress.center = CGPoint(x: view.center.x, y: view.center.y - 80)
+        }
         
         lotName.text = "Lot " + lotID //set up by segue, thus not in update
         lotName.layer.masksToBounds = true;

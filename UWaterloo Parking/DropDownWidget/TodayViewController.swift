@@ -25,7 +25,6 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         update()
     }
     
@@ -43,7 +42,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     func update() {
         
-        let url = NSURL(string: "https://api.uwaterloo.ca/v2/parking/watpark.json?key=95e206951aff0f6b6093b0a340c3185f")!
+        let url = NSURL(string: "https://api.uwaterloo.ca/v2/parking/watpark.json?key=")!
         
         
         

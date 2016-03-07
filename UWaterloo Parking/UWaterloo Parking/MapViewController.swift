@@ -58,8 +58,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
                 pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
                 pinView!.canShowCallout = true
                 pinView!.enabled = true
-                //pinView!.animatesDrop = true
-                
+
                 let btn = UIButton(type: .DetailDisclosure)
                 pinView!.rightCalloutAccessoryView = btn
             }
@@ -89,10 +88,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
                 let destLocation = MKMapItem(placemark: markDestLocation)
                 
                 destLocation.name = "UWaterloo Parking Lot: \(lotName)"
-                //destLocation.openInMapsWithLaunchOptions(nil)
                 
                 let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-                //MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
                 MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
             }
             ))

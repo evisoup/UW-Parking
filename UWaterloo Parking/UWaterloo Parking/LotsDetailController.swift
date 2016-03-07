@@ -29,7 +29,7 @@ class LotsDetailController: UIViewController {
     
     func update() {
         
-        let url = NSURL(string: "https://api.uwaterloo.ca/v2/parking/watpark.json?key=95e206951aff0f6b6093b0a340c3185f")!
+        let url = NSURL(string: "https://api.uwaterloo.ca/v2/parking/watpark.json?key=")!
         
         let task = NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) -> Void in
             
@@ -42,12 +42,10 @@ class LotsDetailController: UIViewController {
                     if let dictionary = object as? [String: AnyObject]{
                         guard let datas = dictionary["data"] as? [[String: AnyObject]] else {return}
                         
-                        
                         for data in datas {
                             guard let name  = data["lot_name"] as? String,
                                 let count = data["current_count"] as? Int,
                                 let pct = data["percent_filled"] as? Int,
-                                //let t = data["last_updated"] as? String,
                                 let lat = data["latitude"] as? Double,
                                 let lon = data["longitude"] as? Double,
                                 
@@ -73,8 +71,7 @@ class LotsDetailController: UIViewController {
                             }
                         }
                     }
-                    
-                    
+            
                 } catch {
                     print("JSON serialization failed")
                 }
@@ -95,7 +92,7 @@ class LotsDetailController: UIViewController {
                 if completed {
                     //print("animation stopped, completed")
                 } else {
-                    print("animation stopped, was interrupted")
+                    //print("animation stopped, was interrupted")
                 }
         }
     }
@@ -116,7 +113,6 @@ class LotsDetailController: UIViewController {
         progress.roundedCorners = false
         progress.glowMode = .Forward
         progress.glowAmount = 0
-        //progress.setColors(UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0),UIColor.orangeColor(),UIColor.yellowColor())
         progress.setColors(UIColor(red: 252/255.0, green: 212/255.0, blue: 80/255.0, alpha: 1.0))
         
         let ssize:CGRect = UIScreen.mainScreen().bounds
@@ -141,7 +137,6 @@ class LotsDetailController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        
     }
     
     func willEnterForground() {
@@ -157,7 +152,6 @@ class LotsDetailController: UIViewController {
         
         destLocation.name = "Parking Lot \(lotID)"
 
-        
         let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
         
         MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)

@@ -38,23 +38,8 @@ class HomeViewController: UIViewController {
         
     }
 
-    
-    
-    
-//main
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-
-        
-        //add four parking lots image view
-        
-//        var imageView : UIImageView
-//        imageView  = UIImageView(frame:CGRectMake(10+15, 50+30, 37, 38));
-//        imageView.image = UIImage(named:"lotc.png")
-//        self.view.addSubview(imageView)
-        
         
         self.navigationItem.title = "UWATERLOO PARKING"
         
@@ -65,38 +50,33 @@ class HomeViewController: UIViewController {
     
     func willEnterForground() {
         update()
-        print("will enter forground")
+
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if(segue.identifier == "cDetails" ){
-            print("going c")
             if let destinationVC = segue.destinationViewController as? LotsDetailController{
                 destinationVC.lotID  =  "C"
             }
         }
         
         if(segue.identifier == "nDetails" ){
-            print("going n")
             if let destinationVC = segue.destinationViewController as? LotsDetailController{
                 destinationVC.lotID  =  "N"
             }
         }
         
         if(segue.identifier == "xDetails" ){
-            print("going x")
             if let destinationVC = segue.destinationViewController as? LotsDetailController{
                 destinationVC.lotID  =  "X"
             }
         }
         
         if(segue.identifier == "wDetails" ){
-            print("going w")
             if let destinationVC = segue.destinationViewController as? LotsDetailController{
                 destinationVC.lotID  =  "W"
             }
@@ -109,7 +89,7 @@ class HomeViewController: UIViewController {
     
     func update() {
         
-        let url = NSURL(string: "https://api.uwaterloo.ca/v2/parking/watpark.json?key=95e206951aff0f6b6093b0a340c3185f")!
+        let url = NSURL(string: "https://api.uwaterloo.ca/v2/parking/watpark.json?key=")!
         
         let task = NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) -> Void in
             
@@ -121,7 +101,6 @@ class HomeViewController: UIViewController {
                     
                     if let dictionary = object as? [String: AnyObject]{
                         guard let datas = dictionary["data"] as? [[String: AnyObject]] else {return}
-                        
                         
                         for data in datas {
                             guard let name  = data["lot_name"] as? String,
@@ -154,8 +133,6 @@ class HomeViewController: UIViewController {
                             }
                         }
                     }
-                    
-                    // print(String(jsonResult["data"])) // good
                 } catch {
                     print("JSON serialization failed")
                 }

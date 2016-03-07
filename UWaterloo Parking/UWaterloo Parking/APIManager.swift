@@ -16,17 +16,26 @@ class RestApiManager: NSObject {
     
     var baseURL = "https://api.uwaterloo.ca/v2/poi/visitorinformation.json"
     
-    let APIkey = "2fa6eb226bdc853b6dd71e6f7bd5a822"
-    // https://api.uwaterloo.ca/v2/poi/visitorinformation.json?key=2fa6eb226bdc853b6dd71e6f7bd5a822
+    let APIkey = ""
+    // https://api.uwaterloo.ca/v2/poi/visitorinformation.json?key=
     
     var basebuildingURL = "https://api.uwaterloo.ca/v2/buildings/list.json"
     var baseParkingURL = "https://api.uwaterloo.ca/v2/parking/watpark.json"
     
-    //https://api.uwaterloo.ca/v2/buildings/list.json?key=2fa6eb226bdc853b6dd71e6f7bd5a822
+    //https://api.uwaterloo.ca/v2/buildings/list.json?key=
     
     
-    var parkingReqURL = "https://api.uwaterloo.ca/v2/parking/watpark.json?key=1f3c24ff0e62c935e11722c4989b2043"
+    var parkingReqURL = "https://api.uwaterloo.ca/v2/parking/watpark.json?key="
     
+    var source3Dtouch: Bool = false
+    
+    func getsource3Dtouch() -> Bool {
+        return self.source3Dtouch
+    }
+    
+    func setsource3Dtouch(data: Bool) -> Void {
+        self.source3Dtouch = data
+    }
     
     func getBuildingData(onCompletion: (JSON) -> Void) {
         makeHTTPGetRequest(basebuildingURL+"?key="+APIkey, onCompletion: { json, err in

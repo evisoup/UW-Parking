@@ -9,8 +9,8 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+//class AppDelegate: UIResponder, UIApplicationDelegate,  {
+class AppDelegate: UIResponder, UIApplicationDelegate  {
     var window: UIWindow?
     
     func grabStoryBoard() -> UIStoryboard {
@@ -41,9 +41,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().tintColor = colour
         
         UINavigationBar.appearance().barTintColor = colour
-        // UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName:UIColor.blackColor()]
         UINavigationBar.appearance().tintColor = UIColor.blackColor()
+        
         return true
+    }
+    
+    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        let handledShhortcutItem = self.runShortcutItem(shortcutItem)
+        completionHandler(handledShhortcutItem)
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -54,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        self.window?.rootViewController?.dismissViewControllerAnimated(false, completion: nil)
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
@@ -68,5 +74,78 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
+    enum ShortcutIdentifier: String {
+        case First
+        case Second
+        case Third
+        
+        init?(fullType: String)
+        {
+            guard let last = fullType.componentsSeparatedByString(".").last else {return nil}
+            self.init(rawValue: last)
+        }
+        
+        var type: String
+            {
+                return NSBundle.mainBundle().bundleIdentifier! + ".\(self.rawValue)"
+        }
+
+    }
+    
+    
+    func runShortcutItem(shortcutItem: UIApplicationShortcutItem) -> Bool
+    {
+        var run = false
+        
+        guard ShortcutIdentifier(fullType: shortcutItem.type) != nil else { return false }
+        guard let shortcutType = shortcutItem.type as String? else { return false }
+        
+        let height = UIScreen.mainScreen().bounds.size.height
+        var storyboard = UIStoryboard()
+        if height == 667.0 {
+            storyboard = UIStoryboard(name: "Main", bundle: nil)
+        } else {
+            storyboard = UIStoryboard(name: "MainForPlus", bundle: nil)
+        }
+        
+        switch (shortcutType)
+        {
+        case ShortcutIdentifier.First.type:
+            run = true
+            
+            let tabBarController = storyboard.instantiateViewControllerWithIdentifier("Begin") as! UITabBarController
+            
+            tabBarController.selectedIndex = 1
+            self.window?.rootViewController?.presentViewController(tabBarController, animated: true, completion: nil)
+            
+            break
+        case ShortcutIdentifier.Second.type:
+            run = true
+            RestApiManager.sharedInstance.setsource3Dtouch(true)
+            
+            let tabBarController = storyboard.instantiateViewControllerWithIdentifier("Begin") as! UITabBarController
+            
+            tabBarController.selectedIndex = 2
+            self.window?.rootViewController?.presentViewController(tabBarController, animated: true, completion: nil)
+            
+            break
+        case ShortcutIdentifier.Third.type:
+            run = true
+            
+            let tabBarController = storyboard.instantiateViewControllerWithIdentifier("Begin") as! UITabBarController
+            
+            tabBarController.selectedIndex = 3
+            self.window?.rootViewController?.presentViewController(tabBarController, animated: true, completion: nil)
+            
+            break
+        default:
+            break
+        }
+        
+        return run
+        
+    }
+    
+
     
 }

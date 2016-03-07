@@ -28,6 +28,8 @@
 		B783B2771C7521AD00A3B108 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B783B2761C7521AD00A3B108 /* TodayViewController.swift */; };
 		B783B27A1C7521AD00A3B108 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B783B2781C7521AD00A3B108 /* MainInterface.storyboard */; };
 		B783B27E1C7521AD00A3B108 /* DropDownWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B783B2711C7521AD00A3B108 /* DropDownWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B7BABA651C8CBEB300699A75 /* buildingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7BABA641C8CBEB300699A75 /* buildingData.swift */; };
+		B7BABA691C8D13F500699A75 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B7BABA681C8D13F500699A75 /* arrow.png */; };
 		FC0C1B341C7F779200FCF4DB /* MainForPlus.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC0C1B321C7F779200FCF4DB /* MainForPlus.storyboard */; };
 		FC0C1B361C7F7A2200FCF4DB /* MainFor55S.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC0C1B351C7F7A2200FCF4DB /* MainFor55S.storyboard */; };
 		FC593D1A1C7E16B100AE8BB6 /* launchscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = FC593D191C7E16B100AE8BB6 /* launchscreen.png */; };
@@ -85,6 +87,8 @@
 		B783B2761C7521AD00A3B108 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 		B783B2791C7521AD00A3B108 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B783B27B1C7521AD00A3B108 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7BABA641C8CBEB300699A75 /* buildingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = buildingData.swift; sourceTree = "<group>"; };
+		B7BABA681C8D13F500699A75 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		FC0C1B331C7F779200FCF4DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainForPlus.storyboard; sourceTree = "<group>"; };
 		FC0C1B351C7F7A2200FCF4DB /* MainFor55S.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainFor55S.storyboard; sourceTree = "<group>"; };
 		FC593D191C7E16B100AE8BB6 /* launchscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launchscreen.png; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				6A0158981C780BEE008E4E89 /* iconn.png */,
 				6A0158991C780BEE008E4E89 /* iconw.png */,
 				6A01589A1C780BEE008E4E89 /* iconx.png */,
+				B7BABA681C8D13F500699A75 /* arrow.png */,
 				FC593D191C7E16B100AE8BB6 /* launchscreen.png */,
 				5D51897B1C7547D70062CEFF /* SwiftyJSON.swift */,
 				5D51897D1C7547EB0062CEFF /* APIManager.swift */,
@@ -151,6 +156,7 @@
 				B783B2621C74E12300A3B108 /* MapViewController.swift */,
 				B783B2601C74E10600A3B108 /* HomeViewController.swift */,
 				B783B24C1C74DC7900A3B108 /* AppDelegate.swift */,
+				B7BABA641C8CBEB300699A75 /* buildingData.swift */,
 				B783B2521C74DC7900A3B108 /* Main.storyboard */,
 				FC0C1B321C7F779200FCF4DB /* MainForPlus.storyboard */,
 				FC0C1B351C7F7A2200FCF4DB /* MainFor55S.storyboard */,
@@ -266,6 +272,7 @@
 				FC0C1B341C7F779200FCF4DB /* MainForPlus.storyboard in Resources */,
 				FCBAF6631C7684B6003AB4B7 /* Percentage-50.png in Resources */,
 				FC7BBBC41C7D26DB00D283E9 /* MainFor4S.storyboard in Resources */,
+				B7BABA691C8D13F500699A75 /* arrow.png in Resources */,
 				6A01589B1C780BEE008E4E89 /* iconc.png in Resources */,
 				6A01589E1C780BEE008E4E89 /* iconx.png in Resources */,
 				B783B2561C74DC7900A3B108 /* Assets.xcassets in Resources */,
@@ -292,6 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7BABA651C8CBEB300699A75 /* buildingData.swift in Sources */,
 				B783B2651C74E13600A3B108 /* SearchViewController.swift in Sources */,
 				B783B26B1C7519CD00A3B108 /* LotsDetailController.swift in Sources */,
 				B783B2671C74E14700A3B108 /* PinViewController.swift in Sources */,

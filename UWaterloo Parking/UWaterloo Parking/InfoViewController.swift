@@ -28,11 +28,9 @@ class InfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
          self.navigationItem.title = "INFO"
-        
-        
+
         RestApiManager.sharedInstance.getData { json in
             let results = json["data"]
             
@@ -65,16 +63,12 @@ class InfoViewController: UIViewController {
         print("done")
         
         let currentLocation = MKMapItem.mapItemForCurrentLocation()
-        //let markDC = MKPlacemark(coordinate: CLLocationCoordinate2DMake(43.47155, -80.54565), addressDictionary: nil)
-        
         let markDestLocation = MKPlacemark(coordinate: CLLocationCoordinate2DMake(self.latitude, self.longitude), addressDictionary: nil)
         let destLocation = MKMapItem(placemark: markDestLocation)
         
         destLocation.name = "Parking Services"
-        //destLocation.openInMapsWithLaunchOptions(nil)
         
         let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-        //MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
         MKMapItem.openMapsWithItems([currentLocation, destLocation], launchOptions: launchOptions)
      
         
@@ -83,11 +77,7 @@ class InfoViewController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-        
-        
-        
-        
+ 
     }
     
     

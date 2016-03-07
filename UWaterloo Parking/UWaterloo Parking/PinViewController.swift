@@ -20,6 +20,7 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapContainer: MKMapView!
     
     override func viewDidLoad() {
+
         super.viewDidLoad()
         self.navigationItem.title = "PIN"
         reloadMap()
@@ -27,6 +28,14 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
         mapContainer.showsCompass = true
         mapContainer.showsBuildings = true
         mapContainer.mapType = .Hybrid
+        
+        let from3dtouch: Bool = RestApiManager.sharedInstance.getsource3Dtouch()
+        if from3dtouch {
+            print("from3dtouch!")
+            dropPin()
+        } else {
+            print("default view")
+        }
     }
     
     func reloadMap() {
@@ -36,7 +45,7 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
     }
-    
+
     @IBAction func clearCarLocationPin(sender: AnyObject) {
         if defaults.doubleForKey("myCarLatitude") != 0.0 && defaults.doubleForKey("myCarLongitude") != 0.0
             && !carLocationCleared
@@ -64,6 +73,10 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func pin(sender: AnyObject) {
+        self.dropPin()
+    }
+    
+    func dropPin() {
         reloadMap()
         pinMyCar = true
         carLocationCleared = false
@@ -119,7 +132,7 @@ class PinViewController: UIViewController, CLLocationManagerDelegate {
                 self.mapContainer.addAnnotation(annotation)
             }
         } else {
-            print("no previous car location")
+            //print("no previous car location")
             if pinMyCar && !carLocationCleared {
                 //save car loacation i.e. current location
                 defaults.setDouble(latitude, forKey: "myCarLatitude")

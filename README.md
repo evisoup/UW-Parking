@@ -9,3 +9,5 @@ Offical version is available on iOS App Store:
 #### :) _It Is Officially Featured at Campus Parking Lots_ 
 
 <img src="https://github.com/evisoup/UW-Parking/blob/master/FeaturedAtCampus.jpg">
+
+<img src="https://github.com/evisoup/UW-Parking/blob/master/FeaturedAtCampus2.jpg">
